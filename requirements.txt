@@ -1,0 +1,5 @@
+Flask==1.0.2
+flask_kvsession==0.6.2
+gevent==1.4.0
+glom==18.1.1
+click==7.0
