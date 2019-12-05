@@ -2,6 +2,7 @@
 from flask import Flask
 from simplekv.fs import FilesystemStore
 from flask_kvsession import KVSessionExtension
+from config import Config
 
 # https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xv-a-better-application-structure
 def create_app(config_class=Config):
@@ -11,6 +12,10 @@ def create_app(config_class=Config):
 
     app.config.from_object(config_class)
 
-    store = FilesystemStore("./data")
+    store = FilesystemStore(app.config.get("KV_STORE"))
     KVSessionExtension(store, app)
 
+    # TODO:
+    # if dev else deployment
+
+    return app
