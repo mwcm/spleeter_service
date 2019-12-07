@@ -5,17 +5,17 @@ from flask_kvsession import KVSessionExtension
 from config import Config
 
 # https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xv-a-better-application-structure
-def create_app(config_class=Config):
-    app = Flask(__name__)
+app = Flask(__name__)
 
-    app.logger.info(f"using config: {config_class}")
+from app.main import routes
 
-    app.config.from_object(config_class)
+app.logger.info(f"using config: {Config}")
 
-    store = FilesystemStore(app.config.get("KV_STORE"))
-    KVSessionExtension(store, app)
+app.config.from_object(Config)
 
-    # TODO:
-    # if dev else deployment
+store = FilesystemStore(app.config.get("KV_STORE"))
+KVSessionExtension(store, app)
 
-    return app
+# TODO:
+# if dev else deployment
+# logging

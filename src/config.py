@@ -7,6 +7,7 @@ class Config(object):
     SPLEETER_OUT = os.environ.get("SPLEETER_OUT", "/spleeter/out/")
     SPLEETER_MODELS = os.environ.get("SPLEETER_MODELS", "/spleeter/models/")
     KV_STORE = os.environ.get("KV_STORE", "/app/data/")
+    PORT = os.environ.get("PORT", 6000)
 
 
 class DeployConfig(Config):
@@ -15,3 +16,4 @@ class DeployConfig(Config):
     SPLEETER_OUT = os.environ.get("SPLEETER_OUT", "/spleeter/out/")
     SPLEETER_MODELS = os.environ.get("SPLEETER_MODELS", "/spleeter/models/")
     KV_STORE = os.environ.get("KV_STORE", "/app/data/")
+    PORT = os.environ.get("PORT", 6000)
