@@ -3,17 +3,19 @@ import os
 
 class Config(object):
     DEBUG = os.environ.get("DEBUG", True)
-    SPLEETER_IN = os.environ.get("SPLEETER_IN", "/spleeter/in/")
-    SPLEETER_OUT = os.environ.get("SPLEETER_OUT", "/spleeter/out/")
-    SPLEETER_MODELS = os.environ.get("SPLEETER_MODELS", "/spleeter/models/")
-    KV_STORE = os.environ.get("KV_STORE", "/app/data/")
+    SPLEETER_IN = os.environ.get("SPLEETER_IN", "/service/spleeter/in/")
+    SPLEETER_OUT = os.environ.get("SPLEETER_OUT", "/service/spleeter/out/")
+    SPLEETER_MODELS = os.environ.get("SPLEETER_MODELS", "/service/spleeter/models/")
+    KV_STORE = os.environ.get("KV_STORE", "/service/data/")
     PORT = os.environ.get("PORT", 6000)
+    ALLOWED_EXTENSIONS = os.environ.get("ALLOWED_EXTENSIONS", ["mp3", "flac", "wav"])
 
 
 class DeployConfig(Config):
     DEBUG = os.environ.get("DEBUG", False)
-    SPLEETER_IN = os.environ.get("SPLEETER_IN", "/spleeter/in/")
-    SPLEETER_OUT = os.environ.get("SPLEETER_OUT", "/spleeter/out/")
-    SPLEETER_MODELS = os.environ.get("SPLEETER_MODELS", "/spleeter/models/")
-    KV_STORE = os.environ.get("KV_STORE", "/app/data/")
+    SPLEETER_IN = os.environ.get("SPLEETER_IN", "/service/spleeter/in/")
+    SPLEETER_OUT = os.environ.get("SPLEETER_OUT", "/service/spleeter/out/")
+    SPLEETER_MODELS = os.environ.get("SPLEETER_MODELS", "/service/spleeter/models/")
+    KV_STORE = os.environ.get("KV_STORE", "/service/data/")
     PORT = os.environ.get("PORT", 6000)
+    ALLOWED_EXTENSIONS = os.environ.get("ALLOWED_EXTENSIONS", ["mp3", "flac", "wav"])

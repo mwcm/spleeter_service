@@ -1,4 +1,5 @@
 # stub
+import os
 from flask import Flask
 from simplekv.fs import FilesystemStore
 from flask_kvsession import KVSessionExtension
@@ -9,11 +10,25 @@ app = Flask(__name__)
 
 from app.main import routes
 
-app.logger.info(f"using config: {Config}")
 
+app.secret_key = "super_secret"
 app.config.from_object(Config)
+app.logger.warning(f"using config: {app.config}")
 
-store = FilesystemStore(app.config.get("KV_STORE"))
+config_paths = [
+    app.config["SPLEETER_IN"],
+    app.config["SPLEETER_OUT"],
+    app.config["SPLEETER_MODELS"],
+    app.config["KV_STORE"],
+]
+
+for p in config_paths:
+    if not os.path.exists(p):
+        app.logger.warning(p)
+        os.makedirs(p)
+
+
+store = FilesystemStore(app.config["KV_STORE"])
 KVSessionExtension(store, app)
 
 # TODO:
