@@ -1,7 +1,6 @@
 # thanks to https://medium.com/@gabimelo/developing-a-flask-api-in-a-docker-container-with-uwsgi-and-nginx-e089e43ed90e
 FROM researchdeezer/spleeter:3.7
 
-ENV MODEL_PATH /model
 RUN mkdir -p /service
 RUN mkdir -p /model
 
@@ -29,5 +28,7 @@ EXPOSE 6000
 ENTRYPOINT ["/usr/bin/env"]
 
 WORKDIR /service
+ENV MODEL_PATH /model
+
 RUN  chown -R nginx "/service"
 CMD ["/usr/bin/supervisord"]

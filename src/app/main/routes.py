@@ -1,9 +1,23 @@
 import os
-from flask import Flask, flash, request, redirect, url_for, send_from_directory, g
+from flask import (
+    Flask,
+    flash,
+    request,
+    redirect,
+    url_for,
+    send_from_directory,
+    current_app,
+    session,
+)
 from werkzeug.utils import secure_filename
-from app import app, store
-from app.main.spleeter import spleeter_setup
+from app import app
 from app.utils import allowed_extensions
+
+from spleeter.audio.adapter import get_default_audio_adapter
+from spleeter.separator import Separator
+
+# ABOVE WORKED IN python3 repl in containe>>>
+# separator.separate_to_file('/service/spleeter/in/test.mp3', destination='/service/spleeter/out/', filename_format='{instrument}.{codec}')
 
 
 @app.route("/")
@@ -14,11 +28,16 @@ def index():
 
 @app.route("/go", methods=["GET", "POST"])
 def start_aeiou():
-    separators, audio_loader = spleeter_setup()
     app.logger.warning("START")
-    waveform, rate = audio_loader.load(f'{app.config["SPLEETER_IN"]}test.mp3')
+    ## TODO: why can't instantiate separator here?
+    separator = Separator("spleeter:2stems")
     app.logger.warning("LOADED")
-    result = seperators[2].separate(waveform)
+
+    result = separator.separate_to_file(
+        f'{app.config["SPLEETER_IN"]}test.mp3',
+        destination=f'{app.config["SPLEETER_OUT"]}',
+        filename_format="{instrument}.{codec}",
+    )
     app.logger.warning("SEPERATED")
     return "OK"
 
@@ -45,4 +64,3 @@ def upload():
                 filename = secure_filename(a_file.filename)
                 a_file.save(os.path.join(app.config["SPLEETER_IN"], filename))
                 return "OK"
-
