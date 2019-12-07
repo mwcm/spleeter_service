@@ -1,12 +1,11 @@
 # thanks to https://medium.com/@gabimelo/developing-a-flask-api-in-a-docker-container-with-uwsgi-and-nginx-e089e43ed90e
 FROM researchdeezer/spleeter:3.7
 
-ENV MODEL_PATH ${SPLEETER_MODELS}
+ENV MODEL_PATH /model
 RUN mkdir -p /service
 RUN mkdir -p /model
 
 RUN useradd --no-create-home nginx
-VOLUME /spleeter/
 
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends supervisor nginx python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
