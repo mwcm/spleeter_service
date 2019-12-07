@@ -19,9 +19,6 @@ def uploaded_file(filename):
 
 @app.route("/upload_file", methods=["GET", "POST"])
 def upload_and_seperate():
-    app.logger.warning(request)
-    app.logger.warning(dir(request))
-    app.logger.warning(request.files)
     if request.method == "POST":
         if len(request.files) == 0:
             flash("No file")

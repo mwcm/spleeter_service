@@ -8,7 +8,6 @@ from spleeter.audio.adapter import get_default_audio_adapter
 from spleeter.separator import Separator
 
 # ty to https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xv-a-better-application-structure
-# ty https://github.com/jqueguiner/spleeter-as-a-service/blob/master/src/app.py
 app = Flask(__name__)
 
 from app.main import routes
@@ -26,7 +25,6 @@ config_paths = [
 
 for p in config_paths:
     if not os.path.exists(p):
-        app.logger.warning(p)
         os.makedirs(p)
 
 
