@@ -25,10 +25,10 @@ COPY ./src/ /service/
 
 EXPOSE 6000
 
-ENTRYPOINT ["/usr/bin/env"]
-
 WORKDIR /service
 ENV MODEL_PATH /model
 
-RUN  chown -R nginx "/service"
+#RUN rq worker spleeter_tasks -u 'redis://0.0.0.0'
+RUN chown -R nginx "/service"
+ENTRYPOINT ["/usr/bin/env"]
 CMD ["/usr/bin/supervisord"]

@@ -1,0 +1,21 @@
+version: '3'
+services:
+
+  spleeter_service:
+    container_name: spleeter_service
+    restart: unless-stopped
+    volumes:
+      - '~/Downloads/models:/model'
+    build:
+      context: .
+    ports:
+      - "6000:80"
+    env_file:
+      - ".env"
+    depends_on:
+      - redis
+
+  redis:
+    container_name: redis
+    restart: unless-stopped
+    image: redis:5.0.7
