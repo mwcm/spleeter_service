@@ -1,3 +1,4 @@
+from app import app
 from spleeter.separator import Separator
 from spleeter.audio.adapter import get_default_audio_adapter
 from spleeter import SpleeterError

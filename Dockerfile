@@ -28,7 +28,6 @@ EXPOSE 6000
 WORKDIR /service
 ENV MODEL_PATH /model
 
-#RUN rq worker spleeter_tasks -u 'redis://0.0.0.0'
 RUN chown -R nginx "/service"
 ENTRYPOINT ["/usr/bin/env"]
 CMD ["/usr/bin/supervisord"]

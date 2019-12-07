@@ -1,3 +1,4 @@
+from app import app
 import redis
 from rq import Connection, Worker
 
