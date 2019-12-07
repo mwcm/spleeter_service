@@ -1,7 +1,9 @@
 # thanks to https://medium.com/@gabimelo/developing-a-flask-api-in-a-docker-container-with-uwsgi-and-nginx-e089e43ed90e
 FROM researchdeezer/spleeter:3.7
 
-RUN mkdir -p /app
+ENV MODEL_PATH ${SPLEETER_MODELS}
+RUN mkdir -p /service
+RUN mkdir -p /model
 
 RUN useradd --no-create-home nginx
 VOLUME /spleeter/
@@ -13,16 +15,15 @@ RUN rm /etc/nginx/sites-enabled/default
 RUN rm -r /root/.cache
 
 RUN  mkdir -p /etc/uwsgi/
-COPY ./requirements.txt /app/requirements.txt
+COPY ./requirements.txt /service/requirements.txt
 COPY ./nginx.conf /etc/nginx/
 COPY ./flask-site-nginx.conf /etc/nginx/conf.d/
 COPY ./uwsgi.ini /etc/uwsgi/
 COPY ./supervisord.conf /etc/
 
-RUN pip3 install --no-cache-dir --upgrade pip -r /app/requirements.txt
+RUN pip3 install --no-cache-dir --upgrade pip -r /service/requirements.txt
 
 COPY ./src/ /service/
-
 
 EXPOSE 6000
 

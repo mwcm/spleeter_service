@@ -4,12 +4,14 @@ from flask import Flask
 from simplekv.fs import FilesystemStore
 from flask_kvsession import KVSessionExtension
 from config import Config
+from spleeter.audio.adapter import get_default_audio_adapter
+from spleeter.separator import Separator
 
 # ty to https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xv-a-better-application-structure
+# ty https://github.com/jqueguiner/spleeter-as-a-service/blob/master/src/app.py
 app = Flask(__name__)
 
 from app.main import routes
-
 
 app.secret_key = "super_secret"
 app.config.from_object(Config)
@@ -30,7 +32,3 @@ for p in config_paths:
 
 store = FilesystemStore(app.config["KV_STORE"])
 KVSessionExtension(store, app)
-
-# TODO:
-# if dev else deployment
-# logging

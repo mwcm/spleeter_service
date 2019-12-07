@@ -17,7 +17,7 @@ def uploaded_file(filename):
     return send_from_directory(app.config["SPLEETER_IN"], filename)
 
 
-@app.route("/seperate", methods=["GET", "POST"])
+@app.route("/upload_file", methods=["GET", "POST"])
 def upload_and_seperate():
     app.logger.warning(request)
     app.logger.warning(dir(request))
@@ -36,5 +36,5 @@ def upload_and_seperate():
             if a_file and allowed_extensions(a_file.filename):
                 filename = secure_filename(a_file.filename)
                 a_file.save(os.path.join(app.config["SPLEETER_IN"], filename))
-        return
+        return 200
 
