@@ -4,7 +4,7 @@ from simplekv.fs import FilesystemStore
 from flask_kvsession import KVSessionExtension
 from config import Config
 
-# https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xv-a-better-application-structure
+# ty to https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xv-a-better-application-structure
 app = Flask(__name__)
 
 from app.main import routes
