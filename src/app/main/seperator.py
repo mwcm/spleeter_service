@@ -1,7 +1,7 @@
 from zipfile import ZipFile
 from app import app
 from app.utils import generate_random_filename
-from flask import url_for, redirect
+from flask import url_for
 from spleeter.separator import Separator
 from spleeter.audio.adapter import get_default_audio_adapter
 from spleeter import SpleeterError

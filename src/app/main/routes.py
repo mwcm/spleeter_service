@@ -16,6 +16,7 @@ from werkzeug.utils import secure_filename
 from app import app
 from app.utils import allowed_extensions
 from rq import Queue, Connection
+from main.youtube import YoutubeHelper
 
 
 @app.route("/")
@@ -68,6 +69,11 @@ def uploaded(filename):
 @app.route("/separated/<filename>")
 def separated(filename):
     return send_from_directory(app.config["SPLEETER_OUT"], filename)
+
+
+@app.route("/youtube/<songname>", methods=["GET"])
+def youtube():
+    n = request.args.get("songname")
 
 
 @app.route("/upload", methods=["POST"])
