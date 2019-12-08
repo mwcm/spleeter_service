@@ -41,11 +41,8 @@ def index():
 #       should copy to laptop/cloud
 #       or access as a volume?
 
-
-@app.route("/separate_file/<filename>", methods=["GET"])
-def separate_file(filename):
+def separate_helper(filename, n):
     allowed_n = ["2", "4", "5"]
-    n = request.args.get("n")
     if n not in allowed_n:
         n = "2"
     separator = SimpleSeparator(f"spleeter:{n}stems")
@@ -57,8 +54,14 @@ def separate_file(filename):
             destination=f'{app.config["SPLEETER_OUT"]}',
             filename_format="{instrument}.{codec}",
         )
-        response_object = {"status": "success", "data": {"task_id": task.get_id()}}
-    return jsonify(response_object), 202
+    return response_object = {"status": "success", "data": {"task_id": task.get_id()}}
+
+
+@app.route("/separate/<filename>", methods=["GET"])
+def separate(filename):
+    n = request.args.get("n")
+    response = separate_helper(filename, n)
+    return jsonify(response), 202
 
 
 @app.route("/uploads/<filename>")
@@ -71,7 +74,7 @@ def processed_file(filename):
     return send_from_directory(app.config["SPLEETER_OUT"], filename)
 
 
-@app.route("/upload_file", methods=["POST"])
+@app.route("/upload", methods=["POST"])
 def upload():
     if request.method == "POST":
         if len(request.files) == 0:
@@ -87,17 +90,32 @@ def upload():
             if a_file and allowed_extensions(a_file.filename):
                 filename = secure_filename(a_file.filename)
                 a_file.save(os.path.join(app.config["SPLEETER_IN"], filename))
+            return redirect(url_for('uploads', filename))
 
-                # allowed_separate = [1, 0]
-                # app.logger.warning(separate)
-                # if separate not in allowed_separate:
-                # separate = 0
-                # if separate == 1:
-                # logger.warning()
-                # separate_file(filename)
-                # else:
-                return "OK"
-                # return redirect(url_for("uploaded_file", filename=filename))
+
+@app.route("/upload_and_separate/", methods=["POST"])
+def upload():
+    if request.method == "POST":
+        if len(request.files) == 0:
+            flash("No file")
+            return redirect(request.url)
+
+        for file in request.files:
+            a_file = request.files[file]
+
+            if a_file.filename == "":
+                flash("no file selected")
+
+            if a_file and allowed_extensions(a_file.filename):
+                filename = secure_filename(a_file.filename)
+                a_file.save(os.path.join(app.config["SPLEETER_IN"], filename))
+                n = request.form.get("n")
+                response = separate_helper(filename, n)
+            else:
+                allowed_extensions
+                flash(f"invalid file extension, valid extensions are: {app.config['ALLOWED_EXTENSIONS']}")
+
+            return jsonify(response), 202
 
 
 # ty https://github.com/gbroccolo/flask-redis-docker/blob/master/webapp/app/main.py
