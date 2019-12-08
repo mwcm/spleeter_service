@@ -22,11 +22,24 @@ from rq import Queue, Connection
 REDIS_URL = "redis://redis:6379/0"
 REDIS_QUEUES = ["default"]
 
-# ty https://github.com/gbroccolo/flask-redis-docker/blob/master/webapp/app/main.py
+
 @app.route("/")
 @app.route("/index")
 def index():
     return "Hello, World!"
+
+
+# TODO:
+#       make a better "start_aeiou" route, take stem # and file as a param
+#       make a route to upload AND process the uploaded file
+#       route for youtube
+#       route for soundcloud
+#       route for spotify id
+
+# TODO: to decide...
+#       option to automatically store w/ google drive or something?
+#       should copy to laptop/cloud
+#       or access as a volume?
 
 
 @app.route("/go", methods=["GET", "POST"])
@@ -75,6 +88,7 @@ def upload():
                 return "OK"
 
 
+# ty https://github.com/gbroccolo/flask-redis-docker/blob/master/webapp/app/main.py
 @app.route("/tasks/<task_id>", methods=["GET"])
 def get_status(task_id):
     with Connection(redis.from_url(REDIS_URL)):
