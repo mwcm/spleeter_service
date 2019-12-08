@@ -22,7 +22,7 @@ from rq import Queue, Connection
 REDIS_URL = "redis://redis:6379/0"
 REDIS_QUEUES = ["default"]
 
-
+# ty https://github.com/gbroccolo/flask-redis-docker/blob/master/webapp/app/main.py
 @app.route("/")
 @app.route("/index")
 def index():
@@ -33,7 +33,7 @@ def index():
 def start_aeiou():
     app.logger.warning("START")
     app.logger.warning("LOADED")
-    separator = BasicSeparator("spleeter:4stems")
+    separator = BasicSeparator("spleeter:2stems")
     with Connection(redis.from_url(REDIS_URL)):
         q = Queue()
         task = q.enqueue(
@@ -49,6 +49,11 @@ def start_aeiou():
 @app.route("/uploads/<filename>")
 def uploaded_file(filename):
     return send_from_directory(app.config["SPLEETER_IN"], filename)
+
+
+@app.route("/complete/<filename>")
+def processed_file(filename):
+    return send_from_directory(app.config["SPLEETER_OUT"], filename)
 
 
 @app.route("/upload_file", methods=["GET", "POST"])
@@ -68,3 +73,32 @@ def upload():
                 filename = secure_filename(a_file.filename)
                 a_file.save(os.path.join(app.config["SPLEETER_IN"], filename))
                 return "OK"
+
+
+@app.route("/tasks/<task_id>", methods=["GET"])
+def get_status(task_id):
+    with Connection(redis.from_url(REDIS_URL)):
+        q = Queue()
+        task = q.fetch_job(task_id)
+    if task:
+        response_object = {
+            "status": "success",
+            "data": {
+                "task_id": task.get_id(),
+                "task_status": task.get_status(),
+                "task_result": task.result,
+            },
+        }
+
+        if task.is_failed:
+            response_object = {
+                "status": "failed",
+                "data": {
+                    "task_id": task.get_id(),
+                    "message": task.exc_info.strip().split("\n")[-1],
+                },
+            }
+    else:
+        response_object = {"status": "ERROR: Unable to fetch the task from RQ"}
+    return jsonify(response_object)
+

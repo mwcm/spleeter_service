@@ -1,4 +1,5 @@
 from app import app
+from flask import url_for, redirect
 from spleeter.separator import Separator
 from spleeter.audio.adapter import get_default_audio_adapter
 from spleeter import SpleeterError
@@ -55,12 +56,10 @@ class BasicSeparator(Separator):
         filename = splitext(basename(audio_descriptor))[0]
         generated = []
         for instrument, data in sources.items():
-            path = join(
-                destination,
-                filename_format.format(
-                    filename=filename, instrument=instrument, codec=codec
-                ),
+            formatted_name = filename_format.format(
+                filename=filename, instrument=instrument, codec=codec
             )
+            path = join(destination, formatted_name,)
             if path in generated:
                 raise SpleeterError(
                     (
@@ -70,4 +69,5 @@ class BasicSeparator(Separator):
                 )
             generated.append(path)
             audio_adapter.save(path, data, self._sample_rate, codec, bitrate)
-            return
+            with app.app_context():
+                return url_for("processed_file", filename=formatted_name)

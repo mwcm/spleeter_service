@@ -1,8 +1,15 @@
 # thanks to https://medium.com/@gabimelo/developing-a-flask-api-in-a-docker-container-with-uwsgi-and-nginx-e089e43ed90e
 FROM researchdeezer/spleeter:3.7
 
+ENV SPLEETER_IN=${SPLEETER_IN}
+ENV SPLEETER_OUT=${SPLEETER_OUT}
+ENV KV_STORE=${KV_STORE}
+
 RUN mkdir -p /service
 RUN mkdir -p /model
+RUN mkdir -p /service/spleeter/in
+RUN mkdir -p /service/spleeter/out
+RUN mkdir -p /service/spleeter/model
 
 RUN useradd --no-create-home nginx
 
