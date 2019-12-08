@@ -71,8 +71,8 @@ def uploaded_file(filename):
     return send_from_directory(app.config["SPLEETER_IN"], filename)
 
 
-@app.route("/complete/<filename>")
-def processed_file(filename):
+@app.route("/separated/<filename>")
+def separated(filename):
     return send_from_directory(app.config["SPLEETER_OUT"], filename)
 
 
@@ -96,7 +96,7 @@ def upload():
 
 
 @app.route("/upload_and_separate/", methods=["POST"])
-def upload():
+def upload_and_separate():
     if request.method == "POST":
         if len(request.files) == 0:
             flash("No file")
