@@ -30,7 +30,6 @@ def index():
 
 
 # TODO:
-#       make a better "start_aeiou" route, take stem # and file as a param
 #       make a route to upload AND process the uploaded file
 #       route for youtube
 #       route for soundcloud
@@ -43,16 +42,18 @@ def index():
 #       or access as a volume?
 
 
-@app.route("/go", methods=["GET", "POST"])
-def start_aeiou():
-    app.logger.warning("START")
-    app.logger.warning("LOADED")
-    separator = BasicSeparator("spleeter:2stems")
+@app.route("/separate_file/<filename>", methods=["GET"])
+def separate_file(filename):
+    allowed_n = ["2", "4", "5"]
+    n = request.args.get("n")
+    if n not in allowed_n:
+        n = "2"
+    separator = BasicSeparator(f"spleeter:{n}stems")
     with Connection(redis.from_url(REDIS_URL)):
         q = Queue()
         task = q.enqueue(
             separator.separate_to_file,
-            f'{app.config["SPLEETER_IN"]}test.mp3',
+            f'{app.config["SPLEETER_IN"]}{filename}',
             destination=f'{app.config["SPLEETER_OUT"]}',
             filename_format="{instrument}.{codec}",
         )
