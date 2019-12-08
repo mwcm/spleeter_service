@@ -1,4 +1,6 @@
+from zipfile import ZipFile
 from app import app
+from app.utils import generate_random_filename
 from flask import url_for, redirect
 from spleeter.separator import Separator
 from spleeter.audio.adapter import get_default_audio_adapter
@@ -70,6 +72,9 @@ class BasicSeparator(Separator):
             generated.append(path)
             audio_adapter.save(path, data, self._sample_rate, codec, bitrate)
 
-            # TODO: SAVE AS ZIP OR FOLDER THEN URL_FOR
-            with app.app_context():
-                return url_for("processed_file", filename=formatted_name)
+        zip_path = generate_random_filename(destination, "zip")
+        with ZipFile(zip_path, "w") as zip:
+            for output_path in generated:
+                zip.write(output_path, arcname=basename(output_path))
+        with app.app_context():
+            return url_for("processed_file", filename=basename(zip_path))
