@@ -3,7 +3,6 @@ FROM researchdeezer/spleeter:3.7
 
 ENV SPLEETER_IN=${SPLEETER_IN}
 ENV SPLEETER_OUT=${SPLEETER_OUT}
-ENV KV_STORE=${KV_STORE}
 
 RUN mkdir -p /service
 RUN mkdir -p /model
