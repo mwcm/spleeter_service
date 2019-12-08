@@ -15,7 +15,7 @@ from werkzeug.utils import secure_filename
 from app import app
 from app.utils import allowed_extensions
 
-from app.main.seperator import BasicSeparator
+from app.main.seperator import SimpleSeparator
 
 from rq import Queue, Connection
 
@@ -48,7 +48,7 @@ def separate_file(filename):
     n = request.args.get("n")
     if n not in allowed_n:
         n = "2"
-    separator = BasicSeparator(f"spleeter:{n}stems")
+    separator = SimpleSeparator(f"spleeter:{n}stems")
     with Connection(redis.from_url(REDIS_URL)):
         q = Queue()
         task = q.enqueue(
@@ -71,7 +71,7 @@ def processed_file(filename):
     return send_from_directory(app.config["SPLEETER_OUT"], filename)
 
 
-@app.route("/upload_file", methods=["GET", "POST"])
+@app.route("/upload_file", methods=["POST"])
 def upload():
     if request.method == "POST":
         if len(request.files) == 0:
@@ -87,7 +87,17 @@ def upload():
             if a_file and allowed_extensions(a_file.filename):
                 filename = secure_filename(a_file.filename)
                 a_file.save(os.path.join(app.config["SPLEETER_IN"], filename))
+
+                # allowed_separate = [1, 0]
+                # app.logger.warning(separate)
+                # if separate not in allowed_separate:
+                # separate = 0
+                # if separate == 1:
+                # logger.warning()
+                # separate_file(filename)
+                # else:
                 return "OK"
+                # return redirect(url_for("uploaded_file", filename=filename))
 
 
 # ty https://github.com/gbroccolo/flask-redis-docker/blob/master/webapp/app/main.py

@@ -10,7 +10,7 @@ from spleeter.utils.configuration import load_configuration
 from os.path import basename, join, splitext
 
 
-class BasicSeparator(Separator):
+class SimpleSeparator(Separator):
     def __init__(self, params_descriptor, MWF=False):
         """ Default constructor.
             :param params_descriptor: Descriptor for TF params to be used.
