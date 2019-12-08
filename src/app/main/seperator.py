@@ -78,4 +78,4 @@ class SimpleSeparator(Separator):
             for output_path in generated:
                 zip.write(output_path, arcname=basename(output_path))
         with app.app_context():
-            return url_for("processed_file", filename=basename(zip_path))
+            return url_for("separated", filename=basename(zip_path))
