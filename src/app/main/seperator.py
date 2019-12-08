@@ -69,5 +69,7 @@ class BasicSeparator(Separator):
                 )
             generated.append(path)
             audio_adapter.save(path, data, self._sample_rate, codec, bitrate)
+
+            # TODO: SAVE AS ZIP OR FOLDER THEN URL_FOR
             with app.app_context():
                 return url_for("processed_file", filename=formatted_name)
