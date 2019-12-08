@@ -13,14 +13,8 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 from app import app
-from app.utils import allowed_extensions
-
-from app.main.seperator import SimpleSeparator
-
+from app.utils import allowed_extensions, separate_helper
 from rq import Queue, Connection
-
-REDIS_URL = "redis://redis:6379/0"
-REDIS_QUEUES = ["default"]
 
 
 @app.route("/")
@@ -41,23 +35,6 @@ def index():
 #       or access as a volume?
 
 
-def separate_helper(filename, n):
-    allowed_n = ["2", "4", "5"]
-    if n not in allowed_n:
-        n = "2"
-    separator = SimpleSeparator(f"spleeter:{n}stems")
-    with Connection(redis.from_url(REDIS_URL)):
-        q = Queue()
-        task = q.enqueue(
-            separator.separate_to_file,
-            f'{app.config["SPLEETER_IN"]}{filename}',
-            destination=f'{app.config["SPLEETER_OUT"]}',
-            filename_format="{instrument}.{codec}",
-        )
-    response_object = {"status": "success", "data": {"task_id": task.get_id()}}
-    return response_object
-
-
 @app.route("/separate/<filename>", methods=["GET"])
 def separate(filename):
     n = request.args.get("n")
@@ -65,8 +42,8 @@ def separate(filename):
     return jsonify(response), 202
 
 
-@app.route("/uploads/<filename>")
-def uploaded_file(filename):
+@app.route("/uploaded/<filename>")
+def uploaded(filename):
     return send_from_directory(app.config["SPLEETER_IN"], filename)
 
 
@@ -91,7 +68,7 @@ def upload():
             if a_file and allowed_extensions(a_file.filename):
                 filename = secure_filename(a_file.filename)
                 a_file.save(os.path.join(app.config["SPLEETER_IN"], filename))
-            return redirect(url_for("uploads", filename))
+            return redirect(url_for("uploaded", filename))
 
 
 @app.route("/upload_and_separate", methods=["POST"])
@@ -124,7 +101,7 @@ def upload_and_separate():
 # ty https://github.com/gbroccolo/flask-redis-docker/blob/master/webapp/app/main.py
 @app.route("/tasks/<task_id>", methods=["GET"])
 def get_status(task_id):
-    with Connection(redis.from_url(REDIS_URL)):
+    with Connection(redis.from_url(app.config["REDIS_URL"])):
         q = Queue()
         task = q.fetch_job(task_id)
     if task:

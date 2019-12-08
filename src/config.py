@@ -8,6 +8,8 @@ class Config(object):
     PORT = os.environ.get("PORT", 6000)
     ALLOWED_EXTENSIONS = os.environ.get("ALLOWED_EXTENSIONS", ["mp3", "flac", "wav"])
     SERVER_NAME = os.environ.get("SERVER_NAME", "localhost:6000")
+    REDIS_URL = os.environ.get("REDIS_URL", "redis://redis:6379/0")
+    REDIS_QUEUES = os.environ.get("REDIS_QUEUES", ["default"])
 
 
 class DeployConfig(Config):
@@ -17,3 +19,5 @@ class DeployConfig(Config):
     PORT = os.environ.get("PORT", 6000)
     ALLOWED_EXTENSIONS = os.environ.get("ALLOWED_EXTENSIONS", ["mp3", "flac", "wav"])
     SERVER_NAME = os.environ.get("SERVER_NAME", "localhost:6000")
+    REDIS_URL = os.environ.get("REDIS_URL", "redis://redis:6379/0")
+    REDIS_QUEUES = os.environ.get("REDIS_QUEUES", ["default"])
