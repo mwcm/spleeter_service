@@ -34,7 +34,8 @@ def index():
 #       make a route to upload AND process the uploaded file
 #       route for youtube
 #       route for soundcloud
-#       route for spotify id
+#       route for spotify
+#       route for soulseek https://github.com/MehdiBela/soulseek_downloader
 
 # TODO: to decide...
 #       option to automatically store w/ google drive or something?

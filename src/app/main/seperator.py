@@ -72,6 +72,7 @@ class BasicSeparator(Separator):
             generated.append(path)
             audio_adapter.save(path, data, self._sample_rate, codec, bitrate)
 
+        # TODO: set to something more descriptive later
         zip_path = generate_random_filename(destination, "zip")
         with ZipFile(zip_path, "w") as zip:
             for output_path in generated:
