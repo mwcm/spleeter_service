@@ -30,7 +30,6 @@ def index():
 
 
 # TODO:
-#       make a route to upload AND process the uploaded file
 #       route for youtube
 #       route for soundcloud
 #       route for spotify
@@ -95,7 +94,7 @@ def upload():
             return redirect(url_for("uploads", filename))
 
 
-@app.route("/upload_and_separate/", methods=["POST"])
+@app.route("/upload_and_separate", methods=["POST"])
 def upload_and_separate():
     if request.method == "POST":
         if len(request.files) == 0:
