@@ -41,6 +41,7 @@ def index():
 #       should copy to laptop/cloud
 #       or access as a volume?
 
+
 def separate_helper(filename, n):
     allowed_n = ["2", "4", "5"]
     if n not in allowed_n:
@@ -54,7 +55,8 @@ def separate_helper(filename, n):
             destination=f'{app.config["SPLEETER_OUT"]}',
             filename_format="{instrument}.{codec}",
         )
-    return response_object = {"status": "success", "data": {"task_id": task.get_id()}}
+    response_object = {"status": "success", "data": {"task_id": task.get_id()}}
+    return response_object
 
 
 @app.route("/separate/<filename>", methods=["GET"])
@@ -90,7 +92,7 @@ def upload():
             if a_file and allowed_extensions(a_file.filename):
                 filename = secure_filename(a_file.filename)
                 a_file.save(os.path.join(app.config["SPLEETER_IN"], filename))
-            return redirect(url_for('uploads', filename))
+            return redirect(url_for("uploads", filename))
 
 
 @app.route("/upload_and_separate/", methods=["POST"])
@@ -113,7 +115,9 @@ def upload():
                 response = separate_helper(filename, n)
             else:
                 allowed_extensions
-                flash(f"invalid file extension, valid extensions are: {app.config['ALLOWED_EXTENSIONS']}")
+                flash(
+                    f"invalid file extension, valid extensions are: {app.config['ALLOWED_EXTENSIONS']}"
+                )
 
             return jsonify(response), 202
 
