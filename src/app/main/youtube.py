@@ -1,8 +1,6 @@
 from flask import url_for
-import requests
 from app import app
 from youtube_dl import YoutubeDL
-from bs4 import BeautifulSoup
 
 
 class MyLogger(object):
@@ -23,9 +21,8 @@ def my_hook(d):
 
 # add vars?
 class YoutubeHelper(object):
-    def download(self, search):
-        # extension = app.config["YT_EXT"]
-        filename = f"{search}".replace(" ", "")  # ".{extension}".replace(" ", "")
+    def download(self, search, return_filename=False):
+        filename = f"{search}".replace(" ", "")
         path = f'{app.config["SPLEETER_IN"]}{filename}'
         ydl_opts = {
             "format": "bestaudio/best",
@@ -46,5 +43,8 @@ class YoutubeHelper(object):
         }
         ydl = YoutubeDL(ydl_opts)
         ydl.download([search])
-        with app.app_context():
-            return url_for("uploaded", filename=filename)
+        if return_filename:
+            return f"{filename}.{app.config['YT_EXT']}"
+        else:
+            with app.app_context():
+                return url_for("uploaded", filename=filename)

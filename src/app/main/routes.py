@@ -11,7 +11,7 @@ from flask import (
     session,
     jsonify,
 )
-from app.main.seperator import SimpleSeparator
+from app.main.separator import get_separator
 from werkzeug.utils import secure_filename
 from app import app
 from app.utils import allowed_extensions
@@ -29,7 +29,6 @@ def index():
 
 
 # TODO:
-#       route for youtube
 #       route for soundcloud
 #       route for spotify
 #       route for soulseek https://github.com/MehdiBela/soulseek_downloader
@@ -40,13 +39,19 @@ def index():
 #       or access as a volume?
 
 
+def youtube_and_separate_helper(separator, search):
+    filename = ythelper.download(search, return_filename=True)
+    return separator.separate_to_file(
+        f'{app.config["SPLEETER_IN"]}{filename}',
+        destination=f'{app.config["SPLEETER_OUT"]}',
+        filename_format="{instrument}.{codec}",
+    )
+
+
 def separate_helper(filename, n):
-    allowed_n = ["2", "4", "5"]
-    if n not in allowed_n:
-        n = "2"
-    separator = SimpleSeparator(f"spleeter:{n}stems")
     with Connection(redis.from_url(app.config["REDIS_URL"])):
         q = Queue()
+        separator = get_separator(n)
         task = q.enqueue(
             separator.separate_to_file,
             f'{app.config["SPLEETER_IN"]}{filename}',
@@ -84,6 +89,19 @@ def youtube():
     return jsonify(response_object)
 
 
+@app.route("/youtube_and_separate", methods=["GET"])
+def youtube_and_separate():
+    search = request.args.get("s")
+    n = request.args.get("n")
+    app.logger.warning(f"N VALUE {n}")
+    with Connection(redis.from_url(app.config["REDIS_URL"])):
+        q = Queue()
+        separator = get_separator(n)
+        combined_task = q.enqueue(youtube_and_separate_helper, separator, search,)
+    response = {"status": "success", "data": {"task_id": combined_task.get_id()}}
+    return jsonify(response), 202
+
+
 @app.route("/upload", methods=["POST"])
 def upload():
     if request.method == "POST":
@@ -110,6 +128,7 @@ def upload_and_separate():
             flash("No file")
             return redirect(request.url)
 
+        # NOTE: only meant to work on one file at a time for now
         for file in request.files:
             a_file = request.files[file]
 
