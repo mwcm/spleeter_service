@@ -8,4 +8,4 @@ app.secret_key = "super_secret"
 from app.main import routes
 
 app.config.from_object(Config)
-app.logger.warning(f"using config: {app.config}")
+app.logger.warning(f"app configc: {app.config}")
