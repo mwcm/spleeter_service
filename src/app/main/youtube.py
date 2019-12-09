@@ -48,21 +48,3 @@ class YoutubeHelper(object):
         ydl.download([search])
         with app.app_context():
             return url_for("uploaded", filename=filename)
-
-    def search(search):
-
-        query = f"{app.config['YT_SEARCH_URL']}{search.replace(' ', '+')}"
-
-        page = requests.get(query)
-
-        soup = BeautifulSoup(page.content, "html.parser")
-
-        vids = soup.findAll("a", attrs={"class": "yt-uix-tile-link"})
-
-        results = []
-
-        # only first result
-        [results.append("https://www.youtube.com" + v["href"]) for v in vids[:1]]
-
-        return results
-
