@@ -4,4 +4,6 @@ click==7.0
 uwsgi==2.0.18
 requests==2.19.1
 rq==1.1.0
-youtube-dl=2019.11.28
+youtube-dl==2019.11.28
+BeautifulSoup4=4.8.1
+spotipy==2.4.4

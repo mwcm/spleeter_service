@@ -16,7 +16,10 @@ from werkzeug.utils import secure_filename
 from app import app
 from app.utils import allowed_extensions
 from rq import Queue, Connection
-from main.youtube import YoutubeHelper
+from app.main.youtube import YoutubeHelper
+from app.main.soundclound import SoundCloudHelper
+
+ythelper = YoutubeHelper()
 
 
 @app.route("/")
@@ -71,9 +74,11 @@ def separated(filename):
     return send_from_directory(app.config["SPLEETER_OUT"], filename)
 
 
-@app.route("/youtube/<songname>", methods=["GET"])
+@app.route("/youtube", methods=["GET"])
 def youtube():
-    n = request.args.get("songname")
+    song = request.args.get("s")
+    file = ythelper.download(song)
+    return str(file)
 
 
 @app.route("/upload", methods=["POST"])
