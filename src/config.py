@@ -14,6 +14,7 @@ class Config(object):
         "YT_SEARCH_URL", "https://www.youtube.com/results?search_query="
     )
     SC_SEARCH_URL = os.environ.get("SC_SEARCH_URL", "https://soundcloud.com/search?q=")
+    YT_EXT = os.environ.get("YT_EXT", "wav")
 
 
 class DeployConfig(Config):
@@ -28,4 +29,5 @@ class DeployConfig(Config):
     YT_SEARCH_URL = os.environ.get(
         "YT_SEARCH_URL", "https://www.youtube.com/results?search_query="
     )
+    YT_EXT = os.environ.get("YT_EXT", "m4a")
     SC_SEARCH_URL = os.environ.get("SC_SEARCH_URL", "https://soundcloud.com/search?q=")

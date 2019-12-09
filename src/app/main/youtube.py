@@ -1,11 +1,8 @@
+from flask import url_for
 import requests
-import pafy
 from app import app
 from youtube_dl import YoutubeDL
-import subprocess
 from bs4 import BeautifulSoup
-import spotipy
-import spotipy.util as util
 
 
 class MyLogger(object):
@@ -25,35 +22,34 @@ def my_hook(d):
 
 
 # add vars?
-ydl_opts = {
-    "format": "bestaudio/best",
-    "extract_audio": True,
-    "postprocessors": [
-        {
-            "key": "FFmpegExtractAudio",
-            "preferredcodec": "m4a",
-            "preferredquality": "320",
-        }
-    ],
-    "logger": MyLogger(),
-    "progress_hooks": [my_hook],
-    "noplaylist": True,
-    "max_downloads": 1,
-    "default_search": "ytsearch",
-}
-
-
 class YoutubeHelper(object):
-    def __init__(self):
-        self.ydl = YoutubeDL(ydl_opts)
-        return
-
     def download(self, search):
-        results = self.ydl.download(search)
-        app.logger.warning(f"DOWNLOAD: {results}")
-        return results
+        # extension = app.config["YT_EXT"]
+        filename = f"{search}".replace(" ", "")  # ".{extension}".replace(" ", "")
+        path = f'{app.config["SPLEETER_IN"]}{filename}'
+        ydl_opts = {
+            "format": "bestaudio/best",
+            "extract_audio": True,
+            "outtmpl": f"{path}.%(ext)s",
+            "postprocessors": [
+                {
+                    "key": "FFmpegExtractAudio",
+                    "preferredcodec": f"{app.config['YT_EXT']}",
+                    "preferredquality": "999",
+                }
+            ],
+            "logger": MyLogger(),
+            "progress_hooks": [my_hook],
+            "noplaylist": True,
+            "max_downloads": 1,
+            "default_search": "ytsearch",
+        }
+        ydl = YoutubeDL(ydl_opts)
+        ydl.download([search])
+        with app.app_context():
+            return url_for("uploaded", filename=filename)
 
-    def soup(search):
+    def search(search):
 
         query = f"{app.config['YT_SEARCH_URL']}{search.replace(' ', '+')}"
 
@@ -63,20 +59,10 @@ class YoutubeHelper(object):
 
         vids = soup.findAll("a", attrs={"class": "yt-uix-tile-link"})
 
-        youtube_list = []
+        results = []
 
-        [youtube_list.append("https://www.youtube.com" + v["href"]) for v in vids[:3]]
+        # only first result
+        [results.append("https://www.youtube.com" + v["href"]) for v in vids[:1]]
 
-        soundcloud_list = []
-        main = "https://soundcloud.com/search?q=" + search.replace(" ", "%20")
-
-        page = requests.get(main)
-        soup = BeautifulSoup(page.content, "html.parser")
-
-        for link in soup.find_all("a", href=True):
-            soundcloud_list.append("https://soundcloud.com" + link["href"])
-
-        soundcloud_list = soundcloud_list[6:9]
-
-        return youtube_list, soundcloud_list
+        return results
 

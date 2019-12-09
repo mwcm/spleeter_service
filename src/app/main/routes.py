@@ -54,7 +54,7 @@ def separate_helper(filename, n):
             filename_format="{instrument}.{codec}",
         )
     response_object = {"status": "success", "data": {"task_id": task.get_id()}}
-    return response_object
+    return jsonify(response_object)
 
 
 @app.route("/separate/<filename>", methods=["GET"])
@@ -76,9 +76,12 @@ def separated(filename):
 
 @app.route("/youtube", methods=["GET"])
 def youtube():
-    song = request.args.get("s")
-    file = ythelper.download(song)
-    return str(file)
+    search = request.args.get("s")
+    with Connection(redis.from_url(app.config["REDIS_URL"])):
+        q = Queue()
+        task = q.enqueue(ythelper.download, search)
+    response_object = {"status": "success", "data": {"task_id": task.get_id()}}
+    return jsonify(response_object)
 
 
 @app.route("/upload", methods=["POST"])
