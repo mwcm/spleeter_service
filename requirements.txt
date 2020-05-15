@@ -2,7 +2,7 @@ Flask==1.0.2
 glom==18.1.1
 click==7.0
 uwsgi==2.0.18
-requests==2.19.1
+requests==2.20.0
 rq==1.1.0
 youtube-dl==2019.11.28
 BeautifulSoup4==4.8.1
