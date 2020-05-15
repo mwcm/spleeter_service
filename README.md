@@ -1,5 +1,5 @@
 # spleeter_service
-wep api for spleeter
+wep api for [spleeter](https://github.com/deezer/spleeter)
 
 
 
